@@ -1,25 +1,24 @@
 ﻿using System;
-using System.Drawing;
+using System.Collections.Generic;
 using static practice2MatrixType.Matrix;
+using static practice2MatrixType.UISetup;
 
 namespace practice2MatrixType
 {
     class Program
     {
-        static void Main(string[] args)
+        internal static Dictionary<string, Matrix> dataBase = new Dictionary<string, Matrix>();
+        static void Main()
         {
             while (true)
             {
                 Console.Clear();
                 Console.WriteLine("Работа с матрицами\n---------------------------------\n\t1 - Ввод матрицы\n\t2 - Операции\n\t3 - Вывод результатов\n\t0 - Выход");
-                Matrix m1 = new Matrix(10, 10);
-                double[,] test = { { 1, 0, 0 }, { 0, 0, 0 }, { 0, 0, 1 } };
-                Matrix m2 = new Matrix(test);
-                //m1.Fill(test);
-                bool temp = m2.IsUnity;
-                Console.WriteLine(temp);
                 switch (Console.ReadKey(true).KeyChar)
                 {
+                    case '1': AddMatrixMenu(); break;
+                    case '2': break;
+                    case '3': ShowAllMatrixes(); break;
                     case '0': Environment.Exit(0); break;
                     default: break;
                 }

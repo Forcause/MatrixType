@@ -31,10 +31,14 @@ namespace practice2MatrixType
             }
             else Console.WriteLine("В матрице должно быть >= 1 значения");
         }
-        public double this[int i, int j]
+        public double? this[int i, int j]
         {
-            get => this.data[i, j];
-            set => this.data[i, j] = value;
+            get
+            {
+                if (i < 0 || j < 0 || i >= nRows || j >= nCols) return null;
+                else return this.data[i, j];
+            }
+            set { this.data[i, j] = (double)value; } //генерация ошибки при индексах < 0
         }
         public int Rows => nRows;
         public int Columns => nCols;
@@ -141,16 +145,16 @@ namespace practice2MatrixType
         }
         public static Matrix operator *(Matrix m1, Matrix m2)
         {
-            if (m1.nRows != m2.nCols)
+            if (m1.nCols != m2.nRows)
             {
-                throw new Exception("Кол-во строк 1 матрицы должно быть равно кол-ву столбцов 2"); //проверь определение
+                throw new Exception("Кол-во строк 1 матрицы должно быть равно кол-ву столбцов 2");
             }
             Matrix matrix = new Matrix(m1.nRows, m2.nCols);
             for (int i = 0; i < matrix.Rows; i++)
             {
                 for (int j = 0; j < matrix.Columns; j++)
                 {
-                    for (int k = 0; k < m1.Rows; k++)
+                    for (int k = 0; k < m1.Columns; k++)
                     {
                         matrix[i, j] += m1[i, k] * m2[k, j];
                     }
@@ -163,12 +167,12 @@ namespace practice2MatrixType
 
         public Matrix Transpose()
         {
-            Matrix matrix = new Matrix(this.nRows, this.nCols);
-            for (int i = 0; i < matrix.Rows; i++)
+            Matrix matrix = new Matrix(this.nCols, this.nRows);
+            for (int i = 0; i < this.Columns; i++)
             {
-                for (int j = 0; j < matrix.Columns; j++)
+                for (int j = 0; j < this.Rows; j++)
                 {
-                    matrix[i, j] = matrix[j, i];
+                    matrix[i, j] = this[j, i];
                 }
             }
             return matrix;
@@ -183,7 +187,7 @@ namespace practice2MatrixType
             double num = 0.0;
             for (int i = 0; i < nCols; i++)
             {
-                num += this[i, i];
+                num += (double)this[i, i];
             }
             return num;
         }
@@ -191,9 +195,9 @@ namespace practice2MatrixType
         public override string ToString()
         {
             string str = "";
-            for(int i = 0; i < nCols; i++)
+            for (int i = 0; i < nRows; i++)
             {
-                for(int j = 0; j < nRows; j++)
+                for (int j = 0; j < nCols; j++)
                 {
                     str += Convert.ToString(this[i, j]) + " ";
                 }
@@ -227,15 +231,34 @@ namespace practice2MatrixType
         public static Matrix Parse(string s)
         {
             string[] strArray = s.Split(',');
-            Matrix matrix = new Matrix(strArray.Length, strArray[0].Split(' ').Length);
-            for(int i = 0; i < strArray.Length; i++)
+            for(int i = 0; i < strArray.Length - 1; i++)
             {
-                for(int j = 0; j < strArray[i].Trim(' ').Split(' ').Length; j++)
+                    if (strArray[i].Trim(' ').Split(',').Length != strArray[i + 1].Trim(' ').Split(',').Length)
+                        throw new FormatException("Неверно введена матрица");
+            }
+            Matrix matrix = new Matrix(strArray.Length, strArray[0].Split(' ').Length);
+            for (int i = 0; i < strArray.Length; i++)
+            {
+                for (int j = 0; j < strArray[i].Trim(' ').Split(' ').Length; j++)
                 {
-                    matrix[i, j] = Convert.ToDouble(strArray[i].Trim(' ').Split(' ')[j]);
+                        matrix[i, j] = Convert.ToDouble(strArray[i].Trim(' ').Split(' ')[j]);
                 }
             }
             return matrix;
+        }
+
+        public static bool TryParse(string s, out Matrix m)
+        {
+            try
+            {
+                m = Parse(s);
+                return true;
+            }
+            catch (FormatException)
+            {
+                m = null;
+                return false;
+            }
         }
     }
 }
