@@ -12,8 +12,7 @@ namespace practice2MatrixType
 
         public Matrix(int nRows, int nCols)
         {
-            if (nRows < 1) Console.WriteLine("Строк должно быть >= 1");
-            else if (nCols < 1) Console.WriteLine("Столбцов должно быть >= 1");
+            if (nRows < 1 || nCols < 1) throw new Exception("Строк и столбцов должно быть >= 1");
             else
             {
                 this.nRows = nRows;
@@ -29,7 +28,7 @@ namespace practice2MatrixType
                 nRows = data.GetUpperBound(0) + 1;
                 nCols = data.GetUpperBound(1) + 1;
             }
-            else Console.WriteLine("В матрице должно быть >= 1 значения");
+            else throw new Exception("Значений в матрице должно быть >= 1");
         }
         public double? this[int i, int j]
         {
@@ -231,17 +230,17 @@ namespace practice2MatrixType
         public static Matrix Parse(string s)
         {
             string[] strArray = s.Split(',');
-            for(int i = 0; i < strArray.Length - 1; i++)
+            for (int i = 0; i < strArray.Length - 1; i++)
             {
-                    if (strArray[i].Trim(' ').Split(',').Length != strArray[i + 1].Trim(' ').Split(',').Length)
-                        throw new FormatException("Неверно введена матрица");
+                if (strArray[i].Trim(' ').Split(',').Length != strArray[i + 1].Trim(' ').Split(',').Length)
+                    throw new FormatException("Неверно введена матрица");
             }
             Matrix matrix = new Matrix(strArray.Length, strArray[0].Split(' ').Length);
             for (int i = 0; i < strArray.Length; i++)
             {
                 for (int j = 0; j < strArray[i].Trim(' ').Split(' ').Length; j++)
                 {
-                        matrix[i, j] = Convert.ToDouble(strArray[i].Trim(' ').Split(' ')[j]);
+                    matrix[i, j] = Convert.ToDouble(strArray[i].Trim(' ').Split(' ')[j]);
                 }
             }
             return matrix;
