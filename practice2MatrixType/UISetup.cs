@@ -7,52 +7,50 @@ namespace practice2MatrixType
 {
     class UISetup
     {
-        public static void AddMatrixMenu(Dictionary<string, Matrix> dataBase)
+        public static void AddMatrixMenu()
         {
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine("Как Вы хотите задать матрицу?\n1. Строкой из значений матрицы\n2. Задать кол-во строк и столбцов, затем заполнить матрицу\n" +
-                    "0. Выход в главное меню");
+                Console.WriteLine("Как Вы хотите задать матрицу?\n1. Строкой из значений матрицы\n2. Задать кол-во строк и столбцов, затем заполнить матрицу" +
+                    "\n3. Задать нулевую матрицу\n4. Задать единичную матрицу\n0. Выход в главное меню");
                 switch (Console.ReadKey(true).KeyChar)
                 {
                     case '1':
-                        CreateMatrixByNumbers(dataBase);
+                        CreateMatrixByNumbers();
                         break;
                     case '2':
-                        CreateMatrixByValues(dataBase);
+                        CreateMatrixByValues();
+                        break;
+                    case '4':
+                        CreateUnityMatrix();
                         break;
                     case '0': return;
                 }
             }
         }
 
-        static void CreateMatrixByValues(Dictionary<string, Matrix> dataBase)
+        static void CreateMatrixByValues()
         {
             string matrixName = "";
             int rows = 0, cols = 0;
             while (true)
             {
                 Console.WriteLine("\nВведите название матрицы: ");
-                try
-                {
-                    matrixName = CreateAndCheckNames(dataBase);
-                    Console.WriteLine("Введите количество строк:");
-                    rows = int.Parse(Console.ReadLine());
-                    Console.WriteLine("Введите количество столбцов:");
-                    cols = int.Parse(Console.ReadLine());
-                    dataBase.Add(matrixName, new Matrix(rows, cols));
-                    return;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    Thread.Sleep(1000);
-                }
+                matrixName = CreateAndCheckNames();
+                Console.WriteLine("Введите количество строк:");
+                rows = int.Parse(Console.ReadLine());
+                Console.WriteLine("Введите количество столбцов:");
+                cols = int.Parse(Console.ReadLine());
+                dataBase.Add(matrixName, new Matrix(rows, cols));
+                Console.WriteLine("Матрица {0} успешно добавлена", matrixName);
+                Thread.Sleep(1000);
+                return;
             }
         }
 
-        static void CreateMatrixByNumbers(Dictionary<string, Matrix> dataBase)
+
+        static void CreateMatrixByNumbers()
         {
             string matrixName = "";
             string initData = "";
@@ -61,7 +59,7 @@ namespace practice2MatrixType
                 Console.WriteLine("\nВведите название матрицы: ");
                 try
                 {
-                    matrixName = CreateAndCheckNames(dataBase);
+                    matrixName = CreateAndCheckNames();
                     Console.WriteLine("\nВведите значения матрицы в формате: строки - цифры, написанные через пробел; конец строки обозначается запятой\n" +
                 "Например 1 1 1, 2 2 2, 3 3 3");
                     initData = Console.ReadLine();
@@ -70,44 +68,89 @@ namespace practice2MatrixType
                     Thread.Sleep(1000);
                     return;
                 }
-                catch (Exception e) { Console.WriteLine(e.Message); }
+                catch
+                {
+                   //обработчик добавь
+                }
+            }
+        }
+        static void CreateUnityMatrix()
+        {
+            string matrixName = "";
+            int matrixSize = 0;
+            while (true)
+            {
+                Console.WriteLine("\nВведите название матрицы: ");
+                try
+                {
+                    matrixName = CreateAndCheckNames();
+                    Console.WriteLine("\nВведите размер матрицы"); //может быть размер меньше 0
+                    matrixSize = int.Parse(Console.ReadLine());
+                    dataBase.Add(matrixName, Matrix.GetUnity(matrixSize));
+                    Console.WriteLine("Матрица {0} успешно добавлена", matrixName);
+                    Thread.Sleep(1000);
+                    return;
+                }
+                catch
+                {
+                    //обработчик добавь
+                }
             }
         }
 
-        public static void Operations(Dictionary<string, Matrix> dataBase)
+        public static void Operations()
         {
             Console.Clear();
             Console.WriteLine("\nВыберите матрицу, над которой хотите произвести операцию\nСписок доступных матриц");
-            if (ShowAllMatrixes(dataBase) == false) return;
+            if (ShowAllMatrixes() == false) return;
+            Matrix firOp = new Matrix(1, 1), secOp = new Matrix(1, 1);
             while (true)
             {
                 Console.WriteLine("\nВыберите желаемую операцию:\n1. '+'\n2. '-'\n3. '*' на матрицу\n4. " +
                 "'*' на число\n0. Выход в меню");
-                switch (Console.ReadKey(true).KeyChar)
+                while (true)
                 {
-                    case '1':
-                        Console.WriteLine("----------------------\nВыберите первую матрицу в операции\n----------------------\n");
-                        Matrix firOp = ChooseMatrix(dataBase);
-                        Console.WriteLine("----------------------\nВыберите вторую матрицу в операции\n----------------------\n");
-                        Matrix secOp = ChooseMatrix(dataBase); //можно вынести в один блок для операций с матрицами и отдельно умножение на число
-                        Console.WriteLine("\nВведите название результирующей матрицы: ");
-                        try
-                        {
-                            dataBase.Add(Console.ReadLine(), firOp + secOp);
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e.Message);
-                            Thread.Sleep(1000);
-                        }
-                        return;
-                    case '0': return;
+                    char op = Console.ReadKey(true).KeyChar;
+                    switch (op)
+                    {
+                        case '1':
+                            OperationsTwoMatrixes(firOp, secOp, '+');
+                            return;
+                        case '2':
+                            OperationsTwoMatrixes(firOp, secOp, '-');
+                            return;
+                        case '3':
+                            OperationsTwoMatrixes(firOp, secOp, '*');
+                            return;
+                        case '0': return;
+                    }
                 }
             }
         }
-        static Matrix ChooseMatrix(Dictionary<string, Matrix> dataBase)
+        static void OperationsTwoMatrixes(Matrix fp, Matrix sp, char operation)
         {
-            ShowAllMatrixes(dataBase);
+            Console.WriteLine("----------------------\nВыберите первую матрицу в операции\n----------------------\n");
+            fp = ChooseMatrix();
+            Console.Clear();
+            Console.WriteLine("----------------------\nВыберите вторую матрицу в операции\n----------------------\n");
+            sp = ChooseMatrix();
+            Console.Clear();
+            Console.WriteLine("\nВведите название результирующей матрицы: ");
+            try
+            {
+                if (operation == '+') dataBase.Add(Console.ReadLine(), fp + sp);
+                else if (operation == '-') dataBase.Add(Console.ReadLine(), fp - sp);
+                else if (operation == '*') dataBase.Add(Console.ReadLine(), fp * sp);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Thread.Sleep(1000);
+            }
+        }
+        static Matrix ChooseMatrix()
+        {
+            ShowAllMatrixes();
             while (true)
             {
                 string choosenMatrixName = Console.ReadLine();
@@ -116,7 +159,7 @@ namespace practice2MatrixType
             }
         }
 
-        public static bool ShowAllMatrixes(Dictionary<string, Matrix> dataBase)
+        public static bool ShowAllMatrixes()
         {
             if (dataBase.Count == 0)
             {
@@ -133,11 +176,14 @@ namespace practice2MatrixType
             }
             return true;
         }
-        static string CreateAndCheckNames(Dictionary<string, Matrix> dataBase)
+        static string CreateAndCheckNames()
         {
-            string matrixName = Console.ReadLine();
-            if (dataBase.ContainsKey(matrixName)) throw new Exception("Матрица с таким названием уже есть");
-            else return matrixName;
+            while (true)
+            {
+                string matrixName = Console.ReadLine();
+                if (dataBase.ContainsKey(matrixName)) Console.WriteLine("Матрица с таким названием уже есть");
+                else return matrixName;
+            }
         }
     }
 }
