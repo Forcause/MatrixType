@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace practice2MatrixType
 {
@@ -198,7 +199,7 @@ namespace practice2MatrixType
             {
                 for (int j = 0; j < nCols; j++)
                 {
-                    str += Convert.ToString(this[i, j]) + " ";
+                    str += Convert.ToString(this[i, j] + " ").PadRight(6);
                 }
                 str += "\n";
             }
@@ -229,18 +230,23 @@ namespace practice2MatrixType
 
         public static Matrix Parse(string s)
         {
-            string[] strArray = s.Split(',');
+            string[] strArray = s.Split(", ");
+            Regex pattern = new Regex(@"\s+");
+            string target = " ";
             for (int i = 0; i < strArray.Length - 1; i++)
             {
-                if (strArray[i].Trim(' ').Split(',').Length != strArray[i + 1].Trim(' ').Split(',').Length)
+                if (pattern.Replace(strArray[i], target).Trim(' ').Split(' ').Length != pattern.Replace(strArray[i + 1], target).Trim(' ').Split(' ').Length)
                     throw new FormatException("Неверно введена матрица");
             }
-            Matrix matrix = new Matrix(strArray.Length, strArray[0].Split(' ').Length);
+            Matrix matrix = new Matrix(strArray.Length, pattern.Replace(strArray[0], target).Trim(' ').Split(' ').Length);
             for (int i = 0; i < strArray.Length; i++)
             {
-                for (int j = 0; j < strArray[i].Trim(' ').Split(' ').Length; j++)
+                for (int j = 0; j < pattern.Replace(strArray[i], target).Trim(' ').Split(' ').Length; j++)
                 {
-                    matrix[i, j] = Convert.ToDouble(strArray[i].Trim(' ').Split(' ')[j]);
+                    double tmp = 0;
+                    if (double.TryParse(pattern.Replace(strArray[i], target).Trim(' ').Split(' ')[j], out tmp))
+                        matrix[i, j] = tmp;
+                    else throw new FormatException("Неверно введена матрица");
                 }
             }
             return matrix;

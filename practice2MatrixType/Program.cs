@@ -19,14 +19,27 @@ namespace practice2MatrixType
                     case '1': AddMatrixMenu(); break;
                     case '2': Operations(); break;
                     case '3':
-                        ShowAllMatrixes();
-                        Console.WriteLine("Нажмите любую кнопку, чтобы перейти в главное меню");
-                        Console.ReadKey(true);
+                        Console.Clear();
+                        if (ShowAllMatrixes())
+                        {
+                            while (true)
+                            {
+                                Console.WriteLine("Нажмите M, чтобы получить дополнительную информацию по матрице\nНажмите 0, чтобы вернуться в главное меню");
+                                if (char.ToLower(Console.ReadKey(true).KeyChar) == 'm') { ShowMoreInfo(); break; }
+                                else if (char.ToLower(Console.ReadKey(true).KeyChar) == '0') break;
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Нажмите любую кнопку, чтобы выйти");
+                            Console.ReadKey();
+                        }
                         break;
                     case '0': Environment.Exit(0); break;
                     default: break;
                 }
             }
+
         }
     }
 }
