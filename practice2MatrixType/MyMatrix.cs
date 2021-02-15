@@ -147,7 +147,7 @@ namespace practice2MatrixType
         {
             if (m1.nCols != m2.nRows)
             {
-                throw new Exception("Кол-во строк 1 матрицы должно быть равно кол-ву столбцов 2");
+                throw new Exception("Кол-во столбцов 1 матрицы должно быть равно кол-ву строк 2");
             }
             Matrix matrix = new Matrix(m1.nRows, m2.nCols);
             for (int i = 0; i < matrix.Rows; i++)

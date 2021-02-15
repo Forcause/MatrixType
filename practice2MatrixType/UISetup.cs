@@ -39,26 +39,26 @@ namespace practice2MatrixType
             string matrixName = CreateAndCheckName();
             while (true)
             {
-                    try
-                    {
-                        Console.WriteLine("Введите количество строк:");
-                        int rows = int.Parse(Console.ReadLine());
-                        Console.WriteLine("Введите количество столбцов:");
-                        int cols = int.Parse(Console.ReadLine());
-                        dataBase.Add(matrixName, new Matrix(rows, cols));
-                        FillMatrix(matrixName);
-                        Console.WriteLine("Матрица {0} успешно добавлена", matrixName);
-                        ShowResult(matrixName);
-                        return;
-                    }
-                    catch (FormatException)
-                    {
-                        Console.WriteLine("Количество строк и столбцов - числовые значения >= 1");
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
+                try
+                {
+                    Console.WriteLine("Введите количество строк:");
+                    int rows = int.Parse(Console.ReadLine());
+                    Console.WriteLine("Введите количество столбцов:");
+                    int cols = int.Parse(Console.ReadLine());
+                    dataBase.Add(matrixName, new Matrix(rows, cols));
+                    FillMatrix(matrixName);
+                    Console.WriteLine("Матрица {0} успешно добавлена", matrixName);
+                    ShowResult(matrixName);
+                    return;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Количество строк и столбцов - числовые значения >= 1");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
         }
         static void FillMatrix(string matrixName)
@@ -128,7 +128,7 @@ namespace practice2MatrixType
             {
                 try
                 {
-                    Console.WriteLine("\nВведите размер матрицы"); //может быть размер меньше 0
+                    Console.WriteLine("\nВведите размер матрицы");
                     int matrixSize = int.Parse(Console.ReadLine());
                     if (choice == 'u') dataBase.Add(matrixName, Matrix.GetUnity(matrixSize));
                     else if (choice == 'e') dataBase.Add(matrixName, Matrix.GetEmpty(matrixSize));
@@ -260,6 +260,15 @@ namespace practice2MatrixType
             Matrix choice = ChooseMatrix();
             Console.WriteLine("\nИнформация по матрице:\nКвадратная: {0}\nНулевая: {1}\nЕдиничная: {2}\nДиагональная: {3}\nСимметричная: {4}",
                 choice.IsSquared ? '+' : '-', choice.IsEmpty ? '+' : '-', choice.IsUnity ? '+' : '-', choice.IsDiagonal ? '+' : '-', choice.IsSymmetric ? '+' : '-');
+            try
+            {
+                Console.WriteLine("След: {0}", choice.Trace());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("След: {0}", e.Message);
+            }
+            Console.WriteLine("Транспонированная матрица:\n{0}", choice.Transpose().ToString());
             Console.WriteLine("Нажмите любую кнопку, чтобы вернуться в главное меню");
             Console.ReadKey(true);
         }
@@ -274,6 +283,7 @@ namespace practice2MatrixType
             {
                 string matrixName = Console.ReadLine();
                 if (dataBase.ContainsKey(matrixName)) Console.WriteLine("Матрица с таким названием уже есть");
+                else if (matrixName == "") Console.WriteLine("Нельзя задать пустую строку в качестве имени");
                 else return matrixName;
             }
         }

@@ -25,8 +25,10 @@ namespace practice2MatrixType
                             while (true)
                             {
                                 Console.WriteLine("Нажмите M, чтобы получить дополнительную информацию по матрице\nНажмите 0, чтобы вернуться в главное меню");
-                                if (char.ToLower(Console.ReadKey(true).KeyChar) == 'm') { ShowMoreInfo(); break; }
-                                else if (char.ToLower(Console.ReadKey(true).KeyChar) == '0') break;
+                                char key = char.ToLower(Console.ReadKey(true).KeyChar);
+                                if (key == 'm') { ShowMoreInfo(); break; }
+                                else if (key == '0') break;
+                                else { Console.Clear(); ShowAllMatrixes();}
                             }
                         }
                         else
@@ -39,7 +41,6 @@ namespace practice2MatrixType
                     default: break;
                 }
             }
-
         }
     }
 }
