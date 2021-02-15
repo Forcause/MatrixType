@@ -39,8 +39,6 @@ namespace practice2MatrixType
             string matrixName = CreateAndCheckName();
             while (true)
             {
-                while (true)
-                {
                     try
                     {
                         Console.WriteLine("Введите количество строк:");
@@ -61,7 +59,6 @@ namespace practice2MatrixType
                     {
                         Console.WriteLine(e.Message);
                     }
-                }
             }
         }
         static void FillMatrix(string matrixName)
@@ -208,6 +205,7 @@ namespace practice2MatrixType
                 {
                     Console.WriteLine(e.Message);
                     Thread.Sleep(3000);
+                    return;
                 }
             }
         }
